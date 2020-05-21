@@ -4,7 +4,7 @@ import discord
 import datetime
 # 프로그램 구성에 필요한 내부 모듈 가져오기
 from Ari_data import *
-import Ari_msg as ms
+import Ari_msg as M
 
 play_stopped = False
 ari = discord.Client()
@@ -257,7 +257,7 @@ class Test(Command):
 
 class ModifyOne(Command):
     def __init__(self):
-        super().__init__('고치기', '관리자', 0, '데이터 하나를 강제로 고치는 명령어야.', ms.modify_one.desc)
+        super().__init__('고치기', '관리자', 0, '데이터 하나를 강제로 고치는 명령어야.', M.ModifyOne.desc)
 
     async def execute(self, message, parsed, permission, args):
         if args == 4:
@@ -309,7 +309,7 @@ class Restart(Command):
 
 class MakeNation(Command):
     def __init__(self):
-        super().__init__('건국', '관리자', 8, '유저 나라를 만드는 명령어야.', ms.MakeNation())
+        super().__init__('건국', '관리자', 8, '유저 나라를 만드는 명령어야.', M.MakeNation.desc)
 
     async def execute(self, message, parsed, permission, args):
         try:
@@ -325,7 +325,7 @@ class MakeNation(Command):
             if not hap == limit:
                 raise SumError('초기 스탯', limit, hap)
 
-            Make.user_nati_area(area_name, nati_name, owner, food, matl, tech, cult)
+            Make.user_nation(area_name, nati_name, owner, food, matl, tech, cult)
 
             dic = Read.choose('나라', nati_name, 'UnionInfo', 'NationInfo', 'AreaInfo', 'AreaExtra')
             # 통합정보, 나라정보, 지역정보, 지역기타 데이터 찾기
@@ -813,6 +813,6 @@ async def on_message(message):
         except KeyError:
             await message.channel.send('{0} 같은 명령어는 없어. "!아리"로 명령어를 검색해 봐.'.format(p[1]))
 
-token = token.token['token']
+token = token.token
 
 ari.run(token)

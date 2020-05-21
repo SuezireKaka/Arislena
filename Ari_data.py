@@ -4,8 +4,11 @@ import random
 from collections import Counter as cnt
 
 class token:
+    """
+    Token.json에서 토큰을 가져온다. 토큰을 활용할 때는 token.token 형식으로 가져오면 된다.
+    """
     with open('Token.json', 'r') as t:
-        token = json.load(t)
+        token = json.load(t)['token']
 
 class Constant:
     """
@@ -471,7 +474,7 @@ class Make(File):
             json.dump(load, seq, indent=2)
 
     @classmethod
-    def user_nation(cls, area_name, nati_name, owner, early_food, early_matl, early_tech, early_cult):
+    def user_nation(cls, area_name: str, nati_name: str, owner: str, early_food: int, early_matl: int, early_tech: int, early_cult: int):
         """유저 나라 데이터를 생성하는 함수"""
         food, matl = Formula.stnd_stat(early_food, early_tech, 0), Formula.stnd_stat(early_matl, early_tech, 0)
         nati_id, area_id = cls.load(cls.seq)[cls.NI], cls.load(cls.seq)[cls.AI]
@@ -480,7 +483,7 @@ class Make(File):
                  Formula.belligerence(food, matl, early_tech, early_cult, food, matl))
         cls.fill(cls.NP, 0, 0, 0, 0, 0, 0) # 전부 기본값 0
         cls.fill(cls.NE, nati_name, owner, True, 7) # 나라명, 오너명, 유저, 보호 일수
-        # 나라ID, 지역명, 기준 (식량, 자재) 스탯, 기술, 문화, 공격병, 충성도, 지역속성
+        # 지역명, 기준 (식량, 자재) 스탯, 기술, 문화, 공격병, 충성도, 지역속성
         cls.fill(cls.AI, area_name, owner, food, matl, early_tech, early_cult, 0, 1000, '수도')
         cls.fill(cls.AP, 0, 0, 0, 0, 0, 0) # 전부 기본값 0
         cls.fill(cls.AE, early_food, early_matl, early_tech, early_cult) # 초기 스탯

@@ -44,4 +44,4 @@ Nara = [
 
 #print(InstantLoad('오너').convert_list())
 
-print(token.token['token'])
+print(token.token)
