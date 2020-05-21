@@ -327,20 +327,15 @@ class MakeNation(Command):
 
             Make.user_nation(area_name, nati_name, owner, food, matl, tech, cult)
 
-            dic = Read.choose('나라', nati_name, 'UnionInfo', 'NationInfo', 'AreaInfo', 'AreaExtra')
-            # 통합정보, 나라정보, 지역정보, 지역기타 데이터 찾기
-            li_u = dic['UnionInfo'][0]
-            li_n = dic['NationInfo']
-            li_i = dic['AreaInfo'][0]
-            li_e = dic['AreaExtra'][0]
+            # 나라정보, 지역정보, 지역기타 데이터 찾기
+            ni = NationInfo('나라', nati_name)
+            ai = AreaInfo('나라', nati_name)
+            ae = AreaExtra('나라', nati_name)
+            nid = ni.nati_ID[0] # 나라 ID
+            aid = ni.area_ID[nid][0] # 수도 ID
 
-            e_food, e_matl, e_tech, e_cult = li_e[1], li_e[2], li_e[3], li_e[4]  # 초기 스탯
-            food, matl = li_i[1], li_i[2]  # 현재 스탯
-            capi = li_n[1]  # 초기 자금
-            # 최대 자금, 최저 자금 계산
-            tu = Calc.min_max_capi(nati_name)
-            max_capi = tu[1]
-            min_capi = tu[0]
+            # 초기 스탯, 현재 스탯, 현재 자금, 최대 자금, 최저 자금
+            max_capi = Formula.max_capi(ai.tech[aid], ai.cult[aid])
 
             emb = discord.Embed(title='새 나라가 나타났어!')
             # "!열람"과 구분할 필요성 있음 (지금은 열람 명령어를 정의하기 이전 상태)
@@ -348,10 +343,13 @@ class MakeNation(Command):
             # 초기 식량, 초기 자재, 초기 기술, 초기 문화, 현재 식량, 현재 자재,
             # 현재 자금, 최대 자금, 최저 자금,
             # 가용 정책 점수
-            value = ms.MakeNationEmbed().format(li_u[5], li_u[4], li_u[1],
-                                                    e_food, e_matl, e_tech, e_cult,
-                                                    food, matl,
-                                                    capi, max_capi, min_capi, li_n[4])
+            value = M.MakeNation.embed_done.format(
+                ni.nati_owner[nid], ni.nati_name[nid], ai.area_name[aid],
+                ae.early_food[aid], ae.early_matl[aid],
+                ae.early_tech[aid], ae.early_cult[aid],
+                ai.food[aid], ai.matl[aid],
+                ni.capital[nid], max_capi, Formula.min_capi(max_capi), ni.investable_point[nid]
+            )
             emb.add_field(name='축하해! 이제 {0}도 어엿한 [왕]이 됐어!'.format(owner), value=value)
             await message.channel.send(embed=emb)
             king_list.append(owner)
@@ -373,11 +371,9 @@ class Colonize(Command):
         domi_nati = parsed[1]
         colo_area = parsed[2]
         try:
-            li_n = Read.all_nati_name()
-            li_a = Read.all_area_name()
-            if not domi_nati in li_n:
+            if not domi_nati in InstantLoad('나라').convert_list():
                 raise DifferentNameError()
-            if not colo_area in li_a:
+            if not colo_area in InstantLoad('지역').convert_list():
                 raise DifferentNameError()
             result = Politic.colonize(domi_nati, colo_area)
             emb = discord.Embed(title='{}의 {} 식민 완료!'.format(domi_nati, colo_area))

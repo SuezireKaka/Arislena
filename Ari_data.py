@@ -57,8 +57,7 @@ class Formula:
 
     # 최대 자금 계산식
     # 초기 자금, 나라 (기술, 문화) 스탯 -> 최대 자금
-    # 초기 자금 = 10000
-    max_capi = lambda early_capi, nati_tech, nati_cult: int(early_capi * (1 + 0.03 * nati_tech + 0.08 * nati_cult))
+    max_capi = lambda nati_tech, nati_cult: int(Constant.early_capital * (1 + 0.03 * nati_tech + 0.08 * nati_cult))
 
     # 최저 자금 계산식
     # 최대 자금 -> 최저 자금
@@ -478,7 +477,7 @@ class Make(File):
         """유저 나라 데이터를 생성하는 함수"""
         food, matl = Formula.stnd_stat(early_food, early_tech, 0), Formula.stnd_stat(early_matl, early_tech, 0)
         nati_id, area_id = cls.load(cls.seq)[cls.NI], cls.load(cls.seq)[cls.AI]
-        # 나라명, 오너명, 초기 자금, 빚, 남은상환기간, 가용점수, 행동횟수, 유저, 호전성
+        # 나라명, 오너명, 초기 자금, 빚, 남은상환기간, 가용점수, 행동횟수, 호전성
         cls.fill(cls.NI, nati_name, owner, Constant.early_capital, 0, 0, Formula.point(early_tech, early_cult), 0,
                  Formula.belligerence(food, matl, early_tech, early_cult, food, matl))
         cls.fill(cls.NP, 0, 0, 0, 0, 0, 0) # 전부 기본값 0

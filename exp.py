@@ -42,6 +42,4 @@ Nara = [
 #Read.one('area_standard_relation.json')
 #Read.one('nation_standard_relation.json')
 
-#print(InstantLoad('오너').convert_list())
-
-print(token.token)
+print(InstantLoad('지역').convert_list())
